@@ -1,5 +1,4 @@
 import styles from './Auth.module.css'
-import supabase from '../services/supabaseClient';
 import { useAuth } from '../context/useAuth';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';

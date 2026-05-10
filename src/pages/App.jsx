@@ -1,27 +1,12 @@
-import { useEffect, useState } from "react";
-import supabase from "../services/supabaseClient";
-import { useAuth } from '../context/useAuth';
-import { Link, useNavigate } from 'react-router-dom';
+import UserBar from '../components/userBar';
 
 function App() {
-    const { user, signOut } = useAuth();
-    const navigate = useNavigate();
 
-    useEffect(() => {
-        if (!user) {
-            navigate('/');
-        }
-    }, [user, navigate]);
-
-    const handleSignOut = async () => {
-        await signOut();
-        navigate('/');
-    };
-
-    return (<div>
+    return (
+    <div>
+        <UserBar />
         <h1>MyPurchaser</h1>
         <p>Welcome to your personal Purchasing Assistant.</p>
-        <button onClick={handleSignOut}>Sign Out</button>
     </div>
     );
 }
