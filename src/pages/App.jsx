@@ -1,12 +1,12 @@
 import UserBar from '../components/userBar';
+import Dashboard from '../components/Dashboard';
 
 function App() {
 
     return (
     <div>
         <UserBar />
-        <h1>MyPurchaser</h1>
-        <p>Welcome to your personal Purchasing Assistant.</p>
+        <Dashboard />
     </div>
     );
 }
