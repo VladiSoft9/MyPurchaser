@@ -23,7 +23,32 @@ function Dashboard() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setReportData(null);}
+    setReportData(null);
+  
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-report', {
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+      
+      if (data && data.error) {
+        throw new Error(data.error);
+      }
+
+      setReportData(data);
+    } catch (err) {
+      console.error('Error generating report:', err);
+      alert('Failed to generate report: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.dashboardContainer}>
