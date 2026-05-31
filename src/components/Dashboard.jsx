@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../context/useAuth';
 import { Search, Loader2, PackageSearch } from 'lucide-react';
 import styles from './Dashboard.module.css';
+import supabase from '../services/supabaseClient';
+import Report from './Report';
 
 function Dashboard() {
   const [formData, setFormData] = useState({
@@ -42,6 +44,7 @@ function Dashboard() {
       }
 
       setReportData(data);
+      console.log('Report generated successfully:', data);
     } catch (err) {
       console.error('Error generating report:', err);
       alert('Failed to generate report: ' + err.message);
@@ -58,7 +61,7 @@ function Dashboard() {
       </div>
 
       <div className={styles.formCard}>
-        <form className={styles.searchForm}>
+        <form onSubmit={handleSubmit} className={styles.searchForm}>
             <div className={styles.formGroup}>
               <label htmlFor="partNumber">Part Number</label>
               <input
@@ -131,6 +134,24 @@ function Dashboard() {
           </div>
         </form>
       </div>
+
+      {loading && !reportData && (
+        <div className={styles.loadingState}>
+          <div className={styles.radarContainer}>
+            <PackageSearch size={48} className={styles.pulseIcon} />
+            <div className={styles.ripple}></div>
+          </div>
+          <h3>AI Agent is working...</h3>
+          <p>Scraping databases and preparing your report...</p>
+        </div>
+      )}
+
+      {reportData && !loading && (
+        <div className={styles.reportSection}>
+          <Report report={reportData} />
+        </div>
+      )}
+
     </div>
   );
 }
