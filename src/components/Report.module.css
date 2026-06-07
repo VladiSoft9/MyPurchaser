@@ -438,6 +438,11 @@
   color: #64748b;
 }
 
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .reportContainer {

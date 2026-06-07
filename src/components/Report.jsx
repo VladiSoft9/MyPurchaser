@@ -1,10 +1,48 @@
 import { useState } from 'react';
-import { CheckCircle2, AlertTriangle, XCircle, Info, ExternalLink, Mail, Building2, MapPin, Download, FileText, Copy, Check } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, XCircle, Info, ExternalLink, Mail, Building2, MapPin, Download, FileText, Copy, Check, Loader2 } from 'lucide-react';
 import styles from './Report.module.css';
+import supabase from '../services/supabaseClient';
+import { useAuth } from '../context/useAuth';
 
 function Report({ report }) {
 
   const [copiedEmail, setCopiedEmail] = useState(null);
+  const {session} = useAuth();
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(null);
+
+  const handleSaveReport = async () => {
+    if (!session.user) {
+      alert('You have to be logged in to save reports.');
+      return;
+    }
+    setSaving(true);
+
+    try {
+      const {error} = await supabase.from('reports').insert({
+        user_id: session.user.id,
+        part_number: report.part_number,
+        description: report.description,
+        market: report.market,
+        availability_status: report.availability_status,
+        suppliers: report.suppliers
+      });
+
+      if (error) {
+        throw error;
+      }
+      setSaveStatus('Saved!');
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
+    catch (error) {
+      console.error('Error saving report:', error);
+      setSaveStatus('Error!');
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
+    finally {
+      setSaving(false);
+    }
+  }
 
   const handleCopyEmail = (email) => {
     navigator.clipboard.writeText(email);
@@ -57,9 +95,9 @@ function Report({ report }) {
       </div>
 
       <div className={styles.actionToolbar}>
-        <button className={styles.actionBtnSecondary}>
-          <Download size={18} />
-          Save to Database
+        <button className={styles.actionBtnSecondary} onClick={handleSaveReport} disabled={saving}>
+          {saving ? <Loader2 size={18} className={styles.spin} /> : (saveStatus === 'Saved!' ? <Check size={18} /> : <Download size={18} />)}
+          {saving ? 'Saving...' : (saveStatus === 'Saved!' ? 'Saved!' : 'Save to Database')}
         </button>
         <button className={styles.actionBtnSecondary}>
           <FileText size={18} />
