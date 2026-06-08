@@ -46,6 +46,13 @@ function Report({ report }) {
     }
   }
 
+  const handlePrepareQuote = (supplier) => {
+    const subject = encodeURIComponent(`Quotation Request: ${report.part_number}`);
+    const body = encodeURIComponent(`Dear ${supplier.name} Team,\n\nI would like to request a quotation for the following part:\n\nPart Number: ${report.part_number}\nDescription: ${report.description}\nQuantity: [ENTER QUANTITY]\n\nPlease let me know your pricing, lead time, and availability.\n\nBest regards,`);
+    const email = supplier.contact_email || '';
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  };
+
   const handleCopyEmail = (email) => {
     navigator.clipboard.writeText(email);
     setCopiedEmail(email);
@@ -169,7 +176,7 @@ function Report({ report }) {
                 </div>
 
                 <div className={styles.cardActions}>
-                  <button className={styles.quoteBtn}>
+                  <button className={styles.quoteBtn} onClick={() => handlePrepareQuote(supplier)}>
                     <Mail size={16} />
                     Prepare Quotation Request
                   </button>

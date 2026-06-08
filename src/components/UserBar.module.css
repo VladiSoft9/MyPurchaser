@@ -5,9 +5,10 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  background: linear-gradient(180deg, #fce7f3 0%, #ffffff 45%);
+  background: linear-gradient(180deg, #ffffff 0%, #fce7f3 45%);
   color: #1f2937;
   box-sizing: border-box;
+  border-bottom: 0.5rem solid rgba(163, 34, 92, 0.15);
 }
 
 .header {
