@@ -3,6 +3,7 @@ import { CheckCircle2, AlertTriangle, XCircle, Info, ExternalLink, Mail, Buildin
 import styles from './Report.module.css';
 import supabase from '../services/supabaseClient';
 import { useAuth } from '../context/useAuth';
+import { usePDF } from 'react-to-pdf';
 
 function Report({ report }) {
 
@@ -10,6 +11,7 @@ function Report({ report }) {
   const {session} = useAuth();
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
+  const { toPDF, targetRef } = usePDF({filename: `${report.part_number}_sourcing_report.pdf`});
 
   const handleSaveReport = async () => {
     if (!session.user) {
@@ -71,7 +73,7 @@ function Report({ report }) {
   };
 
   return (
-    <div className={styles.reportContainer}>
+    <div className={styles.reportContainer} ref={targetRef}>
             <div className={styles.reportHeader}>
         <div className={styles.headerTop}>
           <h2>Sourcing Report: {report.part_number}</h2>
@@ -99,7 +101,7 @@ function Report({ report }) {
           {saving ? <Loader2 size={18} className={styles.spin} /> : (saveStatus === 'Saved!' ? <Check size={18} /> : <Download size={18} />)}
           {saving ? 'Saving...' : (saveStatus === 'Saved!' ? 'Saved!' : 'Save to Database')}
         </button>
-        <button className={styles.actionBtnSecondary}>
+        <button className={styles.actionBtnSecondary} onClick={() => toPDF()}>
           <FileText size={18} />
           Export PDF
         </button>
