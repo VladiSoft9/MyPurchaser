@@ -1,10 +1,10 @@
 import { useAuth } from '../context/useAuth';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Package, User } from 'lucide-react';
+import { LogOut, Package, User, FileText } from 'lucide-react';
 import styles from './UserBar.module.css';
 
-function UserBar() {
+function UserBar({ handleViewChange, currentView }) {
     const { user, signOut } = useAuth();
     const navigate = useNavigate();
 
@@ -33,6 +33,12 @@ function UserBar() {
                 <User className={styles.userIcon} size={18} />
                 <span className={styles.userEmail}>{user.email}</span>
               </div>
+
+              <button onClick={handleViewChange} className={styles.viewToggleBtn}>
+                <FileText size={18} />
+                <span>{currentView === 'dashboard' ? 'My Reports' : 'Dashboard'}</span>
+              </button>
+
               <button onClick={handleSignOut} className={styles.signOutBtn}>
                 <LogOut size={18} />
                 <span>Sign Out</span>

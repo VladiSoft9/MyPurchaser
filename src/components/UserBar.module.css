@@ -73,6 +73,28 @@
   color: #1f2937;
 }
 
+.viewToggleBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.95rem;
+  background: #fff0f7;
+  color: #db2777;
+  border: 1px solid rgba(219, 39, 119, 0.15);
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.viewToggleBtn:hover {
+  background: #ffe4f0;
+  transition: background 0.2s ease;
+  transform: translateY(-1px);
+}
+
 .signOutBtn {
   display: inline-flex;
   align-items: center;
