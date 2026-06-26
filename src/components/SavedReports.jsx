@@ -1,8 +1,8 @@
 import styles from "./SavedReports.module.css";
 import { useAuth } from "../context/useAuth";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import supabase from "../services/supabaseClient";
-import { Trash2, Loader2, AlertTriangle, Info} from 'lucide-react';
+import { Trash2, Loader2, AlertTriangle, Info, BarChart3, MapPin, CheckCircle2, XCircle} from 'lucide-react';
 
 function SavedReports() {
     const { session } = useAuth();
@@ -51,6 +51,18 @@ function SavedReports() {
         fetchSavedReports();
     }, [session]);
 
+    const stats = useMemo(() => {
+        if(!savedReports || savedReports.length === 0) {
+            return {total: 0, markets: 0, inStock: 0, limited: 0, outOfStock: 0};
+        }
+        const total = savedReports.length;
+        const markets = new Set(savedReports.map(report => report.market)).size;
+        const inStock = savedReports.filter(report => report.availability_status === 'In Stock').length;
+        const outOfStock = savedReports.filter(report => report.availability_status === 'Out of Stock').length;
+        
+        return {total, markets, inStock, outOfStock};
+    }, [savedReports]);
+
     const handleDeleteReport = async (reportId) => {
         setDeletingReportId(reportId);
         setIsDeleting(true);
@@ -95,20 +107,66 @@ function SavedReports() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.header}>
-                <div>
-                    <h1>Saved Reports</h1>
-                    <p>{savedReports.length} report{savedReports.length === 1 ? '' : 's'} saved to your account.</p>
+            <div className={styles.content}>
+                <div className={styles.header}>
+                    <div>
+                        <h1>Saved Reports</h1>
+                        <p>{savedReports.length} report{savedReports.length === 1 ? '' : 's'} saved to your account.</p>
+                    </div>
+                    <div className={styles.summaryBadge}>{savedReports.length}</div>
                 </div>
-                <div className={styles.summaryBadge}>{savedReports.length}</div>
-            </div>
 
-            {savedReports.length === 0 ? (
+                {savedReports.length === 0 ? (
                 <div className={styles.emptyState}>
                     <Info size={24} />
                     <p>No saved reports found.</p>
                 </div>
-            ) : (
+            ) 
+            : 
+            (
+                <>
+                <div className={styles.statsGrid}>
+                    <div className={styles.statCard}>
+                      <div className={styles.statIconWrapper}>
+                        <BarChart3 size={24} className={styles.statIcon} />
+                      </div>
+                      <div className={styles.statInfo}>
+                        <span className={styles.statLabel}>Total Reports</span>
+                        <span className={styles.statVal}>{stats.total}</span>
+                      </div>
+                    </div>
+                    
+                    <div className={styles.statCard}>
+                      <div className={styles.statIconWrapper}>
+                        <MapPin size={24} className={styles.statIcon} />
+                      </div>
+                      <div className={styles.statInfo}>
+                        <span className={styles.statLabel}>Markets Analyzed</span>
+                        <span className={styles.statVal}>{stats.markets}</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.statCard}>
+                      <div className={styles.statIconWrapper}>
+                        <CheckCircle2 size={24} className={styles.statIconGreen} />
+                      </div>
+                      <div className={styles.statInfo}>
+                        <span className={styles.statLabel}>Parts In Stock</span>
+                        <span className={styles.statVal}>{stats.inStock}</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.statCard}>
+                      <div className={styles.statIconWrapper}>
+                        <XCircle size={24} className={styles.statIconRed} />
+                      </div>
+                      <div className={styles.statInfo}>
+                        <span className={styles.statLabel}>Parts Out of Stock</span>
+                        <span className={styles.statVal}>{stats.outOfStock}</span>
+                      </div>
+                    </div>
+                </div>
+
                 <div className={styles.grid}>
                     {savedReports.map((report) => {
                         const status = report.availability_status || 'Unknown';
@@ -143,7 +201,9 @@ function SavedReports() {
                         );
                     })}
                 </div>
+                </>
             )}
+            </div>
         </div>
     );
 }
