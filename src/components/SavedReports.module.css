@@ -139,6 +139,80 @@
   box-shadow: 0 16px 35px rgba(31, 41, 55, 0.05);
 }
 
+.detailContainer {
+  width: 100%;
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+  background: linear-gradient(180deg, #ffffff 0%, #fdf2f8 45%);
+  color: #111827;
+  box-sizing: border-box;
+}
+
+.detailContent {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detailHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid rgba(219, 39, 119, 0.15);
+  border-radius: 1.25rem;
+  box-shadow: 0 18px 40px rgba(31, 41, 55, 0.06);
+}
+
+.backBtn,
+.detailDeleteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.backBtn {
+  background: #ffffff;
+  color: #be185d;
+  border: 1px solid rgba(219, 39, 119, 0.18);
+}
+
+.backBtn:hover {
+  transform: translateY(-1px);
+  background: #fdf2f8;
+  box-shadow: 0 8px 20px rgba(219, 39, 119, 0.12);
+}
+
+.detailDeleteBtn {
+  background: #fff1f2;
+  color: #be123c;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.detailDeleteBtn:hover {
+  transform: translateY(-1px);
+  background: #ffe4e6;
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.12);
+}
+
 .cardHeader {
   display: flex;
   align-items: flex-start;
@@ -216,6 +290,14 @@
   border: 1px solid #cbd5e1;
 }
 
+.cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.actionBtn,
 .deleteBtn {
   display: inline-flex;
   align-items: center;
@@ -223,21 +305,34 @@
   gap: 0.45rem;
   min-height: 2.5rem;
   padding: 0 0.9rem;
-  border: 1px solid rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(219, 39, 119, 0.18);
   border-radius: 999px;
   background: #fff1f2;
   color: #be123c;
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
+.actionBtn:hover:not(:disabled),
 .deleteBtn:hover:not(:disabled) {
   transform: translateY(-1px);
   background: #fee2e2;
+  box-shadow: 0 8px 20px rgba(219, 39, 119, 0.12);
 }
 
+.deleteBtn {
+  border-color: rgba(239, 68, 68, 0.18);
+  color: #be123c;
+  background: #fff1f2;
+}
+
+.deleteBtn:hover:not(:disabled) {
+  background: #fee2e2;
+}
+
+.actionBtn:disabled,
 .deleteBtn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
@@ -259,9 +354,85 @@
   text-align: center;
 }
 
-.statusIcon,
-.errorIcon {
-  color: #db2777;
+.confirmOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.confirmBox {
+  width: min(100%, 500px);
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 1.5rem;
+  box-shadow: 0 32px 70px rgba(15, 23, 42, 0.18);
+  backdrop-filter: blur(20px);
+}
+
+.confirmBox h3 {
+  margin: 0 0 0.85rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.confirmBox p {
+  margin: 0 0 1.25rem;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.confirmActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.cancelDeleteBtn,
+.confirmDeleteBtn {
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cancelDeleteBtn {
+  background: #ffffff;
+  color: #6b7280;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.cancelDeleteBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #f8fafc;
+}
+
+.confirmDeleteBtn {
+  background: #be123c;
+  color: #ffffff;
+  border: 1px solid rgba(190, 18, 60, 0.25);
+}
+
+.confirmDeleteBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #9f1239;
+}
+
+.cancelDeleteBtn:disabled,
+.confirmDeleteBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .statusState p {

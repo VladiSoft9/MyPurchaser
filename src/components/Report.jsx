@@ -5,7 +5,7 @@ import supabase from '../services/supabaseClient';
 import { useAuth } from '../context/useAuth';
 import { usePDF } from 'react-to-pdf';
 
-function Report({ report }) {
+function Report({ report, hideActions = false }) {
 
   const [copiedEmail, setCopiedEmail] = useState(null);
   const {session} = useAuth();
@@ -103,16 +103,18 @@ function Report({ report }) {
         </div>
       </div>
 
-      <div className={styles.actionToolbar}>
-        <button className={styles.actionBtnSecondary} onClick={handleSaveReport} disabled={saving}>
-          {saving ? <Loader2 size={18} className={styles.spin} /> : (saveStatus === 'Saved!' ? <Check size={18} /> : <Download size={18} />)}
-          {saving ? 'Saving...' : (saveStatus === 'Saved!' ? 'Saved!' : 'Save to Database')}
-        </button>
-        <button className={styles.actionBtnSecondary} onClick={() => toPDF()}>
+      {!hideActions && (
+        <div className={styles.actionToolbar}>
+          <button className={styles.actionBtnSecondary} onClick={handleSaveReport} disabled={saving}>
+            {saving ? <Loader2 size={18} className={styles.spin} /> : (saveStatus === 'Saved!' ? <Check size={18} /> : <Download size={18} />)}
+            {saving ? 'Saving...' : (saveStatus === 'Saved!' ? 'Saved!' : 'Save to Database')}
+          </button>
+          <button className={styles.actionBtnSecondary} onClick={() => toPDF()}>
           <FileText size={18} />
           Export PDF
         </button>
       </div>
+      )}
 
             <div className={styles.suppliersSection}>
         <h3>Identified Suppliers</h3>
