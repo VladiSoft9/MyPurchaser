@@ -279,7 +279,7 @@ function SavedReports() {
                           title="Delete saved report"
                         >
                           <Trash2 size={16} />
-                          {isDeletingThis ? "Deleting..." : "Delete"}
+                          <span>{isDeletingThis ? "Deleting..." : "Delete"}</span>
                         </button>
                       </div>
                     </div>

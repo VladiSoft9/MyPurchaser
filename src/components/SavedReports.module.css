@@ -76,6 +76,21 @@
   border: 1px solid rgba(219, 39, 119, 0.12);
   border-radius: 1rem;
   box-shadow: 0 12px 28px rgba(31, 41, 55, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(219, 39, 119, 0.22);
+  box-shadow: 0 16px 32px rgba(219, 39, 119, 0.12);
+}
+
+.statCard:hover .statIconWrapper {
+  transform: scale(1.04);
+}
+
+.statCard:hover .statLabel {
+  color: #be185d;
 }
 
 .statIconWrapper {
@@ -87,6 +102,7 @@
   border-radius: 999px;
   background: rgba(219, 39, 119, 0.12);
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
 .statIcon {
@@ -137,6 +153,13 @@
   border: 1px solid rgba(219, 39, 119, 0.12);
   border-radius: 1.25rem;
   box-shadow: 0 16px 35px rgba(31, 41, 55, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.reportCard:hover {
+  transform: translateY(-4px);
+  border-color: rgba(219, 39, 119, 0.22);
+  box-shadow: 0 18px 40px rgba(31, 41, 55, 0.08);
 }
 
 .detailContainer {
@@ -294,6 +317,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.5rem;
 }
 
@@ -473,5 +497,25 @@
 
   .statsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    gap: 0.2rem;
+  }
+
+  .cardActions {
+    gap: 0.35rem;
+  }
+
+  .actionBtn,
+  .deleteBtn {
+    min-width: 2.5rem;
+    padding: 0;
+    width: 2.5rem;
+  }
+
+  .actionBtn span,
+  .deleteBtn span {
+    display: none;
   }
 }

@@ -9,17 +9,17 @@ function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);   
 
     useEffect(() => {
-        const fetchSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setSession(session);
-            setUser(session?.user || null);
-            setLoading(false);
-        };
-        fetchSession();
+
+        supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
+        });
 
         const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
             setSession(session);
-            setUser(session?.user || null);
+            setUser(session?.user ?? null);
+            setLoading(false);
         });
 
         return () => {
@@ -38,7 +38,7 @@ function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={{ session, user, loading, signUp, signIn, signOut }}>
-            {children}
+            {!loading && children}
         </AuthContext.Provider>
     );
 }
