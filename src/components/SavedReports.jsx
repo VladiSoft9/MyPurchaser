@@ -80,6 +80,19 @@ function SavedReports() {
     return ["All", ... new Set(savedReports.map((report) => report.market))];
   }, [savedReports]);
 
+  const filteredReports = useMemo(() => {
+    return savedReports.filter((report) => {
+      const searchedFiles = report.part_number.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                            report.description.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const filteredByMarket = marketFilter === "All" || report.market === marketFilter;
+      const filteredByStatus = statusFilter === "All" || report.availability_status === statusFilter;
+
+      return searchedFiles && filteredByMarket && filteredByStatus;
+    });
+  }, [savedReports, searchTerm, marketFilter, statusFilter]);
+
+
   const handleDeleteReport = async (reportId) => {
     setDeletingReportId(reportId);
     setIsDeleting(true);
@@ -250,7 +263,8 @@ function SavedReports() {
                 <Search className={styles.searchIcon} size={18} />
                 <input
                   type="text"
-                  placeholder="Search by part number or specs..."
+                  placeholder="Search by item or specs..."
+                  title="Search by part number or specifications"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={styles.searchInput}
@@ -293,7 +307,7 @@ function SavedReports() {
             </div>
 
             <div className={styles.grid}>
-              {savedReports.map((report) => {
+              {filteredReports.map((report) => {
                 const status = report.availability_status || "Unknown";
                 const isDeletingThis =
                   isDeleting && deletingReportId === report.report_id;
