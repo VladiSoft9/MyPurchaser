@@ -2,7 +2,7 @@ import styles from "./SavedReports.module.css";
 import { useAuth } from "../context/useAuth";
 import { useEffect, useState, useMemo } from "react";
 import supabase from "../services/supabaseClient";
-import { Trash2, Loader2, AlertTriangle, Info, BarChart3, MapPin, CheckCircle2, XCircle, Eye, Download, ArrowLeft } from 'lucide-react';
+import { Trash2, Loader2, AlertTriangle, Info, BarChart3, MapPin, CheckCircle2, XCircle, Eye, Download, ArrowLeft, Search } from 'lucide-react';
 import Report from "./Report";
 
 function SavedReports() {
@@ -15,6 +15,10 @@ function SavedReports() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [activeReport, setActiveReport] = useState(null);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [marketFilter, setMarketFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -70,6 +74,10 @@ function SavedReports() {
     ).length;
 
     return { total, markets, inStock, outOfStock };
+  }, [savedReports]);
+
+  const uniqueMarketList = useMemo(() => {
+    return ["All", ... new Set(savedReports.map((report) => report.market))];
   }, [savedReports]);
 
   const handleDeleteReport = async (reportId) => {
@@ -237,6 +245,53 @@ function SavedReports() {
               </div>
             </div>
 
+            <div className={styles.filterBar}>
+              <div className={styles.searchBox}>
+                <Search className={styles.searchIcon} size={18} />
+                <input
+                  type="text"
+                  placeholder="Search by part number or specs..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className={styles.searchInput}
+                />
+              </div>
+
+              <div className={styles.filtersGroup}>
+                <div className={styles.filterSelectWrapper}>
+                  <label htmlFor="market-filter">Market:</label>
+                  <select
+                    id="market-filter"
+                    value={marketFilter}
+                    onChange={(e) => setMarketFilter(e.target.value)}
+                    className={styles.filterSelect}
+                  >
+                    {uniqueMarketList.map((market) => (
+                      <option key={market} value={market}>
+                        {market}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.filterSelectWrapper}>
+                  <label htmlFor="status-filter">Status:</label>
+                  <select
+                    id="status-filter"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className={styles.filterSelect}
+                  >
+                    <option value="All">All Statuses</option>
+                    <option value="In Stock">In Stock</option>
+                    <option value="Limited">Limited</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                    <option value="Unknown">Unknown</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div className={styles.grid}>
               {savedReports.map((report) => {
                 const status = report.availability_status || "Unknown";
@@ -279,7 +334,9 @@ function SavedReports() {
                           title="Delete saved report"
                         >
                           <Trash2 size={16} />
-                          <span>{isDeletingThis ? "Deleting..." : "Delete"}</span>
+                          <span>
+                            {isDeletingThis ? "Deleting..." : "Delete"}
+                          </span>
                         </button>
                       </div>
                     </div>

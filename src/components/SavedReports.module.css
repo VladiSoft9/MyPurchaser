@@ -67,6 +67,89 @@
   margin-bottom: 1.25rem;
 }
 
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  margin-bottom: 1.25rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(219, 39, 119, 0.14);
+  border-radius: 1.1rem;
+  box-shadow: 0 14px 34px rgba(31, 41, 55, 0.06);
+  backdrop-filter: blur(10px);
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 2.95rem;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid rgba(219, 39, 119, 0.16);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.searchBox:focus-within {
+  border-color: #db2777;
+  box-shadow: 0 0 0 4px rgba(219, 39, 119, 0.12);
+}
+
+.searchIcon {
+  color: #db2777;
+  flex-shrink: 0;
+}
+
+.searchInput,
+.filterSelect {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #111827;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.searchInput::placeholder {
+  color: #9ca3af;
+}
+
+.filtersGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filterSelectWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(219, 39, 119, 0.14);
+  border-radius: 999px;
+  background: #fff;
+  min-height: 2.95rem;
+}
+
+.filterSelectWrapper label {
+  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.filterSelect {
+  min-width: 8rem;
+  color: #111827;
+  cursor: pointer;
+}
+
 .statCard {
   display: flex;
   align-items: center;
@@ -76,7 +159,7 @@
   border: 1px solid rgba(219, 39, 119, 0.12);
   border-radius: 1rem;
   box-shadow: 0 12px 28px rgba(31, 41, 55, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .statCard:hover {
@@ -102,7 +185,7 @@
   border-radius: 999px;
   background: rgba(219, 39, 119, 0.12);
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s ease;
 }
 
 .statIcon {
@@ -153,7 +236,7 @@
   border: 1px solid rgba(219, 39, 119, 0.12);
   border-radius: 1.25rem;
   box-shadow: 0 16px 35px rgba(31, 41, 55, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .reportCard:hover {
@@ -487,10 +570,20 @@
   .statsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .filterBar {
+    padding: 1rem;
+  }
 }
 
 @media (max-width: 720px) {
-  .header {
+  .container,
+  .detailContainer {
+    padding: 1rem 0.85rem;
+  }
+
+  .header,
+  .detailHeader {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -499,12 +592,29 @@
     grid-template-columns: 1fr;
   }
 
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtersGroup {
+    flex-direction: column;
+  }
+
+  .filterSelectWrapper {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .cardHeader {
     gap: 0.2rem;
+    flex-direction: column;
   }
 
   .cardActions {
     gap: 0.35rem;
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .actionBtn,
