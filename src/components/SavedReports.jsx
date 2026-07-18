@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import supabase from "../services/supabaseClient";
 import { Trash2, Loader2, AlertTriangle, Info, BarChart3, MapPin, CheckCircle2, XCircle, Eye, Download, ArrowLeft, Search } from 'lucide-react';
 import Report from "./Report";
+import ReportPDFTrigger from "./ReportPDFTrigger";
 
 function SavedReports() {
   const { session } = useAuth();
@@ -19,6 +20,9 @@ function SavedReports() {
   const [searchTerm, setSearchTerm] = useState("");
   const [marketFilter, setMarketFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+
+  const [pdfReport, setPdfReport] = useState(null);
+  const [generatingPDFid, setGeneratingPDFid] = useState(null);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -92,6 +96,10 @@ function SavedReports() {
     });
   }, [savedReports, searchTerm, marketFilter, statusFilter]);
 
+  const handleDownloadReport = (report) => {
+    setGeneratingPDFid(report.report_id);
+    setPdfReport(report);
+  }
 
   const handleDeleteReport = async (reportId) => {
     setDeletingReportId(reportId);
@@ -121,6 +129,45 @@ function SavedReports() {
     }
   };
 
+  const renderDeleteConfirmation = () => {
+    if (!deletingReportId || isDeleting) return null;
+
+    const reportToDelete =
+      activeReport?.report_id === deletingReportId
+        ? activeReport
+        : savedReports.find((report) => report.report_id === deletingReportId) || null;
+
+    if (!reportToDelete) return null;
+
+    return (
+      <div className={styles.confirmOverlay}>
+        <div className={styles.confirmBox}>
+          <h3>Delete Report</h3>
+          <p>
+            Are you sure you want to permanently delete this sourcing report
+            for part <strong>{reportToDelete.part_number || "this report"}</strong>?
+          </p>
+          <div className={styles.confirmActions}>
+            <button
+              className={styles.cancelDeleteBtn}
+              onClick={() => setDeletingReportId(null)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </button>
+            <button
+              className={styles.confirmDeleteBtn}
+              onClick={() => handleDeleteReport(reportToDelete.report_id)}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Deleting..." : "Delete Permanently"}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className={styles.statusState}>
@@ -142,6 +189,7 @@ function SavedReports() {
   if (activeReport) {
     return (
       <div className={styles.detailContainer}>
+        {renderDeleteConfirmation()}
         <div className={styles.detailContent}>
           <div className={styles.detailHeader}>
             <button
@@ -161,34 +209,6 @@ function SavedReports() {
             </button>
           </div>
 
-          {deletingReportId === activeReport.report_id && (
-            <div className={styles.confirmOverlay}>
-              <div className={styles.confirmBox}>
-                <h3>Delete Report</h3>
-                <p>
-                  Are you sure you want to permanently delete this sourcing
-                  report for part <strong>{activeReport.part_number}</strong>?
-                </p>
-                <div className={styles.confirmActions}>
-                  <button
-                    className={styles.cancelDeleteBtn}
-                    onClick={() => setDeletingReportId(null)}
-                    disabled={isDeleting}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className={styles.confirmDeleteBtn}
-                    onClick={() => handleDeleteReport(activeReport.report_id)}
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? "Deleting..." : "Delete Permanently"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
           <Report report={activeReport} hideActions={true} />
         </div>
       </div>
@@ -197,7 +217,20 @@ function SavedReports() {
 
   return (
     <div className={styles.container}>
+      {renderDeleteConfirmation()}
       <div className={styles.content}>
+        {/* PDF Generation Hidden Component */}
+        {pdfReport && (
+          <div className={styles.hiddenPDFContainer}>
+            <ReportPDFTrigger 
+            report={pdfReport} 
+            OnComplete={() => {
+              setPdfReport(null);
+              setGeneratingPDFid(null);
+            }} />
+          </div>
+        )}
+
         <div className={styles.header}>
           <div>
             <h1>Saved Reports</h1>
@@ -334,16 +367,21 @@ function SavedReports() {
                         <button
                           type="button"
                           className={styles.actionBtn}
-                          onClick={() => {}}
+                          onClick={() => handleDownloadReport(report)}
+                          disabled={generatingPDFid !== null}
                           title="Download saved report"
                         >
-                          <Download size={16} />
+                          {generatingPDFid === report.report_id ? (
+                            <Loader2 size={16} className={styles.spin} />
+                          ) : (
+                            <Download size={16} />
+                          )}
                           <span>Download</span>
                         </button>
                         <button
                           type="button"
                           className={styles.deleteBtn}
-                          onClick={() => handleDeleteReport(report.report_id)}
+                          onClick={() => setDeletingReportId(report.report_id)}
                           disabled={isDeletingThis}
                           title="Delete saved report"
                         >
