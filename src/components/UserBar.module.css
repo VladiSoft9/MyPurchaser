@@ -147,7 +147,7 @@
     font-size: 1rem;
   }
 
-  .signOutBtn {
+  .signOutBtn, .viewToggleBtn {
     width: 100%;
     justify-content: center;
   }

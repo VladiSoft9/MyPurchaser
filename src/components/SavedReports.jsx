@@ -20,6 +20,8 @@ function SavedReports() {
   const [searchTerm, setSearchTerm] = useState("");
   const [marketFilter, setMarketFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [yearFilter, setYearFilter] = useState("All");
+  const [monthFilter, setMonthFilter] = useState("All");
 
   const [pdfReport, setPdfReport] = useState(null);
   const [generatingPDFid, setGeneratingPDFid] = useState(null);
@@ -84,6 +86,14 @@ function SavedReports() {
     return ["All", ... new Set(savedReports.map((report) => report.market))];
   }, [savedReports]);
 
+  const uniqueYearList = useMemo(() => {
+    return ["All", ... new Set(savedReports.map((report) => new Date(report.created_at).getFullYear().toString()))];
+  }, [savedReports]);
+
+  const uniqueMonthList = useMemo(() => {
+    return ["All", ... new Set(savedReports.map((report) => (new Date(report.created_at).getMonth() + 1).toString()))];
+  }, [savedReports]);
+
   const filteredReports = useMemo(() => {
     return savedReports.filter((report) => {
       const searchedFiles = report.part_number.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -91,10 +101,12 @@ function SavedReports() {
       
       const filteredByMarket = marketFilter === "All" || report.market === marketFilter;
       const filteredByStatus = statusFilter === "All" || report.availability_status === statusFilter;
+      const filteredbyYear = yearFilter === "All" || new Date(report.created_at).getFullYear().toString() === yearFilter;
+      const filteredbyMonth = monthFilter === "All" || (new Date(report.created_at).getMonth() + 1).toString() === monthFilter;
 
-      return searchedFiles && filteredByMarket && filteredByStatus;
+      return searchedFiles && filteredByMarket && filteredByStatus && filteredbyYear && filteredbyMonth;
     });
-  }, [savedReports, searchTerm, marketFilter, statusFilter]);
+  }, [savedReports, searchTerm, marketFilter, statusFilter, yearFilter, monthFilter]);
 
   const handleDownloadReport = (report) => {
     setGeneratingPDFid(report.report_id);
@@ -322,6 +334,38 @@ function SavedReports() {
                 </div>
 
                 <div className={styles.filterSelectWrapper}>
+                  <label htmlFor="year-filter">Year:</label>
+                  <select
+                    id="year-filter"
+                    value={yearFilter}
+                    onChange={(e) => setYearFilter(e.target.value)}
+                    className={styles.filterSelect}
+                  >
+                    {uniqueYearList.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.filterSelectWrapper}>
+                  <label htmlFor="month-filter">Month:</label>
+                  <select
+                    id="month-filter"
+                    value={monthFilter}
+                    onChange={(e) => setMonthFilter(e.target.value)}
+                    className={styles.filterSelect}
+                  >
+                    {uniqueMonthList.map((month) => (
+                      <option key={month} value={month}>
+                        {month}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.filterSelectWrapper}>
                   <label htmlFor="status-filter">Status:</label>
                   <select
                     id="status-filter"
@@ -395,6 +439,9 @@ function SavedReports() {
 
                     <p className={styles.description}>
                       {report.description || "No description available."}
+                    </p>
+                    <p className={styles.createdOn}>
+                      {`Created on: ${new Date(report.created_at).toLocaleDateString()}`}
                     </p>
 
                     <div className={styles.cardFooter}>
