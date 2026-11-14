@@ -4,10 +4,10 @@ import App from './pages/App.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import './index.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createHashRouter, RouterProvider } from 'react-router-dom'
 import { AuthProvider } from './context/useAuth.jsx';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: "/app",
     element: <App />
